@@ -1,0 +1,12 @@
+id,titulo,autor,categoria,estado
+1,Cien años de soledad,Gabriel García Márquez,Novela,PRESTADO
+2,El principito,Antoine de Saint-Exupéry,Infantil,DISPONIBLE
+3,Don Quijote de la Mancha,Miguel de Cervantes,Clásico,DISPONIBLE
+4,La odisea,Homero,Épico,PRESTADO
+5,1984,George Orwell,Distopía,DISPONIBLE
+6,Rayuela,Julio Cortázar,Novela,DISPONIBLE
+7,Crónica de una muerte anunciada,Gabriel García Márquez,Novela,PRESTADO
+8,Ensayo sobre la ceguera,José Saramago,Novela,DISPONIBLE
+9,Fahrenheit 451,Ray Bradbury,Ciencia ficción,DISPONIBLE
+10,La metamorfosis,Franz Kafka,Novela corta,DISPONIBLE
+11,Ingeniería de Software,Ian Sommerville,Tecnología,DISPONIBLE
