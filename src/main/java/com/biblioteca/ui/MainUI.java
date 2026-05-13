@@ -66,7 +66,6 @@ public class MainUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Ejecutar en el hilo de eventos de Swing
         SwingUtilities.invokeLater(() -> {
             new MainUI();
         });
