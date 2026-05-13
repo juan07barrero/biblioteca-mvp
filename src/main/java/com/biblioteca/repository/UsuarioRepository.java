@@ -43,6 +43,25 @@ public class UsuarioRepository {
         return usuarios;
     }
 
+    public void guardarTodos(List<Usuario> usuarios) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_ARCHIVO))) {
+            bw.write("id,nombre,correo");
+            bw.newLine();
+
+            for (Usuario usuario : usuarios) {
+                bw.write(
+                        usuario.getId() + "," +
+                                usuario.getNombre() + "," +
+                                usuario.getCorreo()
+                );
+                bw.newLine();
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error al guardar usuarios: " + e.getMessage());
+        }
+    }
+
     public Usuario buscarPorId(int id) {
         List<Usuario> usuarios = listar();
 
@@ -53,5 +72,55 @@ public class UsuarioRepository {
         }
 
         return null;
+    }
+
+    public Usuario buscarPorCorreo(String correo) {
+        List<Usuario> usuarios = listar();
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getCorreo().equalsIgnoreCase(correo)) {
+                return usuario;
+            }
+        }
+
+        return null;
+    }
+
+    public void crear(Usuario nuevoUsuario) {
+        List<Usuario> usuarios = listar();
+        usuarios.add(nuevoUsuario);
+        guardarTodos(usuarios);
+    }
+
+    public void actualizar(Usuario usuarioActualizado) {
+        List<Usuario> usuarios = listar();
+
+        for (int i = 0; i < usuarios.size(); i++) {
+            if (usuarios.get(i).getId() == usuarioActualizado.getId()) {
+                usuarios.set(i, usuarioActualizado);
+                break;
+            }
+        }
+
+        guardarTodos(usuarios);
+    }
+
+    public void eliminar(int id) {
+        List<Usuario> usuarios = listar();
+        usuarios.removeIf(usuario -> usuario.getId() == id);
+        guardarTodos(usuarios);
+    }
+
+    public int obtenerSiguienteId() {
+        List<Usuario> usuarios = listar();
+        int mayorId = 0;
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId() > mayorId) {
+                mayorId = usuario.getId();
+            }
+        }
+
+        return mayorId + 1;
     }
 }

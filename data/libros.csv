@@ -1,7 +1,7 @@
 id,titulo,autor,categoria,estado
 1,Cien años de soledad,Gabriel García Márquez,Novela,PRESTADO
-2,El principito,Antoine de Saint-Exupéry,Infantil,DISPONIBLE
-3,Don Quijote de la Mancha,Miguel de Cervantes,Clásico,DISPONIBLE
+2,El principito,Antoine de Saint-Exupéry,Infantil,PRESTADO
+3,Don Quijote de la Mancha,Miguel de Cervantes,Clásico,PRESTADO
 4,La odisea,Homero,Épico,PRESTADO
 5,1984,George Orwell,Distopía,DISPONIBLE
 6,Rayuela,Julio Cortázar,Novela,DISPONIBLE

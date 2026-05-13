@@ -27,33 +27,54 @@ public class PrestamoService {
         return prestamoRepository.listar();
     }
 
+    public int contarPrestamosActivosPorUsuario(int idUsuario) {
+        List<Prestamo> prestamos = prestamoRepository.listar();
+        int contador = 0;
+
+        for (Prestamo prestamo : prestamos) {
+            if (prestamo.getIdUsuario() == idUsuario && prestamo.getEstado().equals("ACTIVO")) {
+                contador++;
+            }
+        }
+
+        return contador;
+    }
+
     public String registrarPrestamo(int idUsuario, int idLibro, LocalDate fechaPrestamo, LocalDate fechaDevolucionEstimada) {
         Usuario usuario = usuarioRepository.buscarPorId(idUsuario);
 
         if (usuario == null) {
-            return "No existe un usuario con el ID indicado.";
+            return "ERROR: No existe un usuario con el ID " + idUsuario;
+        }
+
+        // Regla de negocio: Máximo 3 préstamos activos
+        int prestamosActivos = contarPrestamosActivosPorUsuario(idUsuario);
+        if (prestamosActivos >= 3) {
+            return "ERROR: El usuario " + usuario.getNombre() + " ya tiene " + prestamosActivos +
+                    " préstamos activos. Máximo permitido: 3 préstamos.";
         }
 
         Libro libro = libroRepository.buscarPorId(idLibro);
 
         if (libro == null) {
-            return "No existe un libro con el ID indicado.";
+            return "ERROR: No existe un libro con el ID " + idLibro;
         }
 
+        // Regla de negocio: No prestar libro ya prestado
         if (libro.getEstado() == EstadoLibro.PRESTADO) {
-            return "El libro no está disponible para préstamo.";
+            return "ERROR: El libro '" + libro.getTitulo() + "' no está disponible para préstamo (ya está prestado).";
         }
 
         if (fechaPrestamo == null) {
-            return "La fecha de préstamo no puede estar vacía.";
+            return "ERROR: La fecha de préstamo no puede estar vacía.";
         }
 
         if (fechaDevolucionEstimada == null) {
-            return "La fecha de devolución estimada no puede estar vacía.";
+            return "ERROR: La fecha de devolución estimada no puede estar vacía.";
         }
 
         if (fechaDevolucionEstimada.isBefore(fechaPrestamo)) {
-            return "La fecha de devolución estimada no puede ser anterior a la fecha de préstamo.";
+            return "ERROR: La fecha de devolución estimada no puede ser anterior a la fecha de préstamo.";
         }
 
         int nuevoId = prestamoRepository.obtenerSiguienteId();
@@ -72,6 +93,9 @@ public class PrestamoService {
         libro.setEstado(EstadoLibro.PRESTADO);
         libroRepository.actualizar(libro);
 
-        return "Préstamo registrado correctamente con ID: " + nuevoId;
+        return "ÉXITO: Préstamo registrado correctamente con ID: " + nuevoId +
+                "\nUsuario: " + usuario.getNombre() +
+                "\nLibro: " + libro.getTitulo() +
+                "\nFecha devolución: " + fechaDevolucionEstimada;
     }
 }
