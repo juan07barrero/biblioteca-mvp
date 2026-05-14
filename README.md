@@ -1,7 +1,8 @@
 # Sistema MVP de Préstamo de Libros - Biblioteca
 
-Producto Mínimo Viable desarrollado en Java para apoyar el proceso de préstamo de libros en una biblioteca.  
-El sistema permite registrar préstamos de libros y gestionar libros mediante operaciones CRUD, usando persistencia simple en archivos CSV.
+Producto Mínimo Viable desarrollado en Java con Maven para apoyar el proceso de préstamo de libros en una biblioteca.
+
+El sistema cuenta con una interfaz gráfica sencilla desarrollada con Swing, desde la cual se puede registrar la transacción principal de préstamo de libros y gestionar una entidad del dominio mediante operaciones CRUD. La persistencia se realiza mediante archivos CSV para mantener una implementación simple y fácil de ejecutar.
 
 ---
 
@@ -66,24 +67,29 @@ Después de compilar, ejecutar:
 mvn exec:java
 ```
 
-El sistema mostrará un menú por consola con las opciones principales:
+La aplicación abrirá una interfaz gráfica desarrollada con Swing.
+
+La clase principal configurada para la ejecución es:
 
 ```text
-====================================
-     SISTEMA MVP BIBLIOTECA
-====================================
-1. Registrar préstamo
-2. Gestionar libros
-3. Listar préstamos
-0. Salir
-====================================
+com.biblioteca.ui.MainUI
 ```
+
+La interfaz cuenta con dos pantallas principales:
+
+```text
+1. Registrar préstamo
+2. CRUD usuarios
+```
+
+La primera pantalla corresponde a la transacción de negocio principal.  
+La segunda pantalla corresponde al CRUD de una entidad del dominio.
 
 ---
 
 ## 2. Usuarios de prueba demo
 
-El sistema no cuenta con autenticación, ya que es un MVP sencillo ejecutado por consola.  
+El sistema no cuenta con autenticación, ya que es un MVP sencillo.  
 Sin embargo, para registrar préstamos se deben usar usuarios existentes en el archivo `data/usuarios.csv`.
 
 Usuarios disponibles para pruebas:
@@ -118,8 +124,9 @@ El objetivo principal es representar una solución sencilla que permita:
 - Validar la existencia de libros.
 - Verificar la disponibilidad de los libros.
 - Cambiar el estado de un libro cuando es prestado.
-- Gestionar libros mediante operaciones CRUD.
+- Gestionar usuarios mediante operaciones CRUD.
 - Mantener datos mínimos de prueba usando archivos CSV.
+- Usar una interfaz gráfica simple para facilitar la interacción con el sistema.
 
 La aplicación fue desarrollada de manera simple para facilitar su comprensión, ejecución y sustentación.
 
@@ -150,18 +157,18 @@ El sistema realiza las siguientes validaciones:
 
 ### 4.2. CRUD de una entidad del dominio
 
-La entidad seleccionada para el CRUD es:
+La entidad seleccionada para el CRUD en la interfaz gráfica es:
 
-**Libro**
+**Usuario**
 
 Operaciones implementadas:
 
-- Listar libros.
-- Crear libro.
-- Actualizar libro.
-- Eliminar libro.
+- Listar usuarios.
+- Crear usuario.
+- Actualizar usuario.
+- Eliminar usuario.
 
-Esta entidad fue seleccionada porque es una de las más importantes dentro del dominio de la biblioteca y está directamente relacionada con la transacción de préstamo.
+Esta entidad es importante dentro del dominio porque los usuarios son quienes realizan préstamos dentro del sistema de biblioteca.
 
 ---
 
@@ -169,10 +176,10 @@ Esta entidad fue seleccionada porque es una de las más importantes dentro del d
 
 El proyecto utiliza tecnologías libres y sencillas de ejecutar:
 
-- Java.
+- Java 17.
 - Maven.
+- Swing para la interfaz gráfica.
 - Persistencia en archivos CSV.
-- Ejecución por consola.
 - Visual Studio Code como entorno de desarrollo sugerido.
 
 ---
@@ -195,7 +202,6 @@ biblioteca-mvp/
         └── java/
             └── com/
                 └── biblioteca/
-                    ├── Main.java
                     │
                     ├── model/
                     │   ├── EstadoLibro.java
@@ -208,9 +214,16 @@ biblioteca-mvp/
                     │   ├── UsuarioRepository.java
                     │   └── PrestamoRepository.java
                     │
-                    └── service/
-                        ├── LibroService.java
-                        └── PrestamoService.java
+                    ├── service/
+                    │   ├── LibroService.java
+                    │   ├── PrestamoService.java
+                    │   └── UsuarioService.java
+                    │
+                    └── ui/
+                        ├── MainUI.java
+                        ├── PrestamoPanel.java
+                        ├── UsuarioCRUDPanel.java
+                        └── LookAndFeelUtil.java
 ```
 
 ---
@@ -250,20 +263,36 @@ Contiene la lógica de negocio del sistema:
 
 - `LibroService`
 - `PrestamoService`
+- `UsuarioService`
 
 Aquí se implementan las validaciones, reglas y operaciones principales del MVP.
 
 ---
 
-### 7.4. Clase `Main`
+### 7.4. Capa `ui`
 
-Contiene el menú por consola que permite probar las funcionalidades principales del sistema.
+Contiene las clases encargadas de la interfaz gráfica del sistema.
 
-Desde esta clase se puede:
+Archivos principales:
 
-- Registrar préstamos.
-- Gestionar libros.
-- Listar préstamos registrados.
+- `MainUI.java`: ventana principal de la aplicación.
+- `PrestamoPanel.java`: pantalla para registrar préstamos de libros.
+- `UsuarioCRUDPanel.java`: pantalla para gestionar usuarios mediante CRUD.
+- `LookAndFeelUtil.java`: clase auxiliar para configurar estilos visuales y mensajes.
+
+La interfaz gráfica está construida con Swing y permite interactuar con los servicios del sistema sin modificar la lógica de negocio.
+
+---
+
+### 7.5. Clase principal
+
+La clase principal del sistema es:
+
+```text
+com.biblioteca.ui.MainUI
+```
+
+Esta clase inicializa la ventana principal y organiza las pantallas funcionales del MVP.
 
 ---
 
@@ -330,51 +359,44 @@ El archivo incluye préstamos iniciales para validar la persistencia del sistema
 
 El registro de préstamo funciona de la siguiente manera:
 
-1. El usuario selecciona la opción `Registrar préstamo`.
-2. El sistema muestra la lista de libros.
-3. El usuario ingresa el ID del usuario.
-4. El usuario ingresa el ID del libro.
-5. El sistema busca el usuario en `usuarios.csv`.
-6. El sistema busca el libro en `libros.csv`.
-7. El sistema valida que el libro esté en estado `DISPONIBLE`.
-8. El sistema crea un nuevo préstamo.
-9. El sistema guarda el préstamo en `prestamos.csv`.
-10. El sistema actualiza el estado del libro a `PRESTADO`.
-11. El sistema guarda los cambios en `libros.csv`.
-12. El sistema muestra un mensaje de confirmación.
+1. El usuario abre la pantalla `Registrar préstamo`.
+2. El sistema permite ingresar o seleccionar el usuario.
+3. El sistema permite ingresar o seleccionar el libro.
+4. El sistema busca el usuario en `usuarios.csv`.
+5. El sistema busca el libro en `libros.csv`.
+6. El sistema valida que el libro esté en estado `DISPONIBLE`.
+7. El sistema crea un nuevo préstamo.
+8. El sistema guarda el préstamo en `prestamos.csv`.
+9. El sistema actualiza el estado del libro a `PRESTADO`.
+10. El sistema guarda los cambios en `libros.csv`.
+11. El sistema muestra un mensaje de confirmación.
 
 ---
 
-## 10. Flujo del CRUD de libros
+## 10. Flujo del CRUD de usuarios
 
-El CRUD de libros permite gestionar la entidad principal seleccionada para la entrega.
+El CRUD de usuarios permite gestionar una entidad principal del dominio relacionada directamente con el proceso de préstamo.
 
-### 10.1. Listar libros
+### 10.1. Listar usuarios
 
-Muestra todos los libros registrados en el archivo `libros.csv`.
+Muestra todos los usuarios registrados en el archivo `usuarios.csv`.
 
-### 10.2. Crear libro
+### 10.2. Crear usuario
 
-Permite registrar un nuevo libro con:
+Permite registrar un nuevo usuario con:
 
-- Título.
-- Autor.
-- Categoría.
+- Nombre.
+- Correo.
 
-El sistema asigna automáticamente un nuevo ID y el estado inicial `DISPONIBLE`.
+El sistema asigna automáticamente un nuevo ID.
 
-### 10.3. Actualizar libro
+### 10.3. Actualizar usuario
 
-Permite modificar:
+Permite modificar la información de un usuario existente.
 
-- Título.
-- Autor.
-- Categoría.
-- Estado.
+### 10.4. Eliminar usuario
 
-### 10.4. Eliminar libro
-
-Permite eliminar un libro existente a partir de su ID.
+Permite eliminar un usuario existente a partir de su ID.
 
 ---
 
@@ -388,12 +410,13 @@ La trazabilidad se evidencia relacionando los elementos del análisis con su imp
 | Usuario | `model/Usuario.java` |
 | Préstamo | `model/Prestamo.java` |
 | Estado del libro | `model/EstadoLibro.java` |
-| Registro de préstamo | `service/PrestamoService.java` |
-| CRUD de libros | `service/LibroService.java` |
+| Registro de préstamo | `service/PrestamoService.java` y `ui/PrestamoPanel.java` |
+| CRUD de usuarios | `service/UsuarioService.java` y `ui/UsuarioCRUDPanel.java` |
 | Persistencia de libros | `repository/LibroRepository.java` |
 | Persistencia de usuarios | `repository/UsuarioRepository.java` |
 | Persistencia de préstamos | `repository/PrestamoRepository.java` |
-| Menú de interacción | `Main.java` |
+| Ventana principal | `ui/MainUI.java` |
+| Utilidades visuales | `ui/LookAndFeelUtil.java` |
 | Datos mínimos de prueba | Carpeta `data/` |
 
 ---
@@ -413,36 +436,38 @@ De esta manera, el MVP ayuda a reducir problemas como falta de control, pérdida
 
 ---
 
-## 13. Menú principal del sistema
+## 13. Interfaz gráfica del sistema
 
-Al ejecutar la aplicación se muestra el siguiente menú:
+Al ejecutar la aplicación se abre una ventana principal llamada:
 
 ```text
-====================================
-     SISTEMA MVP BIBLIOTECA
-====================================
-1. Registrar préstamo
-2. Gestionar libros
-3. Listar préstamos
-0. Salir
-====================================
+Sistema de Gestión Biblioteca - MVP
 ```
 
-### Opción 1: Registrar préstamo
+La ventana cuenta con dos pantallas principales:
 
-Corresponde a la transacción de negocio principal.
+### 13.1. Registrar préstamo
 
-### Opción 2: Gestionar libros
+Esta pantalla corresponde a la transacción principal de negocio.
 
-Permite acceder al CRUD de libros.
+Permite:
 
-### Opción 3: Listar préstamos
+- Ingresar o seleccionar un usuario.
+- Ingresar o seleccionar un libro.
+- Confirmar el préstamo.
+- Mostrar mensajes de éxito o error.
+- Actualizar el estado del libro después de registrar el préstamo.
 
-Permite consultar los préstamos registrados.
+### 13.2. CRUD usuarios
 
-### Opción 0: Salir
+Esta pantalla permite gestionar los usuarios del sistema mediante operaciones CRUD.
 
-Finaliza la ejecución del sistema.
+Permite:
+
+- Listar usuarios.
+- Crear usuarios.
+- Actualizar usuarios.
+- Eliminar usuarios.
 
 ---
 
@@ -453,14 +478,94 @@ El sistema implementa las siguientes reglas de negocio:
 1. No se puede registrar un préstamo si el usuario no existe.
 2. No se puede registrar un préstamo si el libro no existe.
 3. No se puede prestar un libro que ya se encuentra en estado `PRESTADO`.
-4. Todo libro nuevo se crea inicialmente con estado `DISPONIBLE`.
-5. Cuando se registra un préstamo, el libro cambia automáticamente a estado `PRESTADO`.
-6. La fecha estimada de devolución no puede ser anterior a la fecha de préstamo.
-7. No se pueden crear o actualizar libros con campos vacíos.
+4. Cuando se registra un préstamo, el libro cambia automáticamente a estado `PRESTADO`.
+5. La fecha estimada de devolución no puede ser anterior a la fecha de préstamo.
+6. No se pueden crear o actualizar registros con campos obligatorios vacíos.
+7. El sistema debe guardar los cambios realizados en los archivos CSV correspondientes.
 
 ---
 
-## 15. Convenciones de ramas sugeridas
+## 15. Requisitos no funcionales mínimos
+
+Además de las funcionalidades principales, el MVP contempla algunos requisitos no funcionales básicos relacionados con rendimiento, validaciones y accesibilidad.
+
+### 15.1. Rendimiento
+
+El sistema está diseñado para trabajar con un volumen pequeño de datos, adecuado para un Producto Mínimo Viable.
+
+Requisitos definidos:
+
+- El sistema debe permitir consultar, crear, actualizar y eliminar registros de forma rápida usando archivos CSV.
+- El sistema debe operar correctamente con un conjunto inicial de entre 10 y 20 registros de prueba.
+- Las operaciones principales deben ejecutarse sin requerir conexión a internet ni base de datos externa.
+- La aplicación debe poder ejecutarse en un equipo básico con Java y Maven instalados.
+
+Implementación:
+
+- La persistencia se realiza mediante archivos CSV ubicados en la carpeta `data/`.
+- Los repositorios cargan los datos desde archivos locales.
+- No se requiere servidor externo ni motor de base de datos.
+
+Limitación:
+
+- Al usar CSV, el sistema no está pensado para grandes volúmenes de datos ni concurrencia de múltiples usuarios al mismo tiempo.
+
+---
+
+### 15.2. Validaciones en cliente y servidor
+
+Aunque el MVP funciona como aplicación de escritorio, se manejan validaciones tanto en la interfaz gráfica como en la lógica de negocio.
+
+#### Validaciones en cliente
+
+Estas validaciones se realizan desde la capa `ui`, donde el usuario interactúa con el sistema:
+
+- Se solicita información obligatoria antes de registrar operaciones.
+- Se muestran mensajes claros cuando ocurre un error.
+- Se evita continuar el flujo cuando faltan datos requeridos.
+- Se informa al usuario cuando una operación se completa correctamente.
+
+#### Validaciones en servidor o lógica de negocio
+
+Estas validaciones se realizan en la capa `service`, principalmente en las clases `PrestamoService`, `LibroService` y `UsuarioService`.
+
+Validaciones implementadas:
+
+- No se puede registrar un préstamo si el usuario no existe.
+- No se puede registrar un préstamo si el libro no existe.
+- No se puede prestar un libro que ya está en estado `PRESTADO`.
+- No se pueden registrar o actualizar datos obligatorios vacíos.
+- La fecha estimada de devolución no puede ser anterior a la fecha de préstamo.
+- El sistema actualiza el estado del libro cuando se registra un préstamo exitoso.
+
+---
+
+### 15.3. Accesibilidad básica
+
+El sistema cuenta con accesibilidad básica a nivel de interfaz gráfica, procurando que la interacción sea clara y entendible para el usuario.
+
+Requisitos definidos:
+
+- La interfaz debe presentar opciones visibles y fáciles de identificar.
+- Los botones deben tener textos claros.
+- Los mensajes de error y confirmación deben ser comprensibles.
+- La navegación entre pantallas debe ser simple.
+- La aplicación debe permitir realizar las acciones principales sin pasos innecesarios.
+
+Implementación:
+
+- La ventana principal organiza las funciones en pantallas separadas.
+- La pantalla de préstamo se enfoca en la transacción principal.
+- La pantalla de usuarios se enfoca en las operaciones CRUD.
+- El sistema muestra mensajes para informar si una acción fue exitosa o si fue bloqueada por una validación.
+
+Limitación:
+
+- Al ser un MVP académico, no se implementan características avanzadas de accesibilidad como lector de pantalla, alto contraste personalizado o navegación completamente optimizada para tecnologías asistivas.
+
+---
+
+## 16. Convenciones de ramas sugeridas
 
 Para evidenciar el trabajo en equipo, se recomienda usar ramas pequeñas y claras.
 
@@ -472,86 +577,85 @@ develop
 feature/modelos
 feature/repositorios
 feature/servicios
-feature/menu-consola
+feature/interfaz-grafica
 feature/readme
 ```
 
-La idea es que cada integrante trabaje en una rama específica y luego se realicen pull requests cortos hacia `develop`.
+La idea es que cada integrante trabaje en una rama específica y luego se realicen pull requests cortos hacia `develop` o hacia la rama definida por el equipo.
 
 ---
 
-## 16. Flujo de trabajo sugerido con Git
+## 17. Flujo de trabajo sugerido con Git
 
-### 16.1. Crear rama de desarrollo
+### 17.1. Crear rama de desarrollo
 
 ```bash
 git checkout -b develop
 ```
 
-### 16.2. Crear una rama para una funcionalidad
+### 17.2. Crear una rama para una funcionalidad
 
 Ejemplo:
 
 ```bash
-git checkout -b feature/modelos
+git checkout -b feature/interfaz-grafica
 ```
 
-### 16.3. Agregar cambios
+### 17.3. Agregar cambios
 
 ```bash
 git add .
 ```
 
-### 16.4. Crear commit
+### 17.4. Crear commit
 
 ```bash
-git commit -m "Agrega modelos del dominio"
+git commit -m "Agrega interfaz grafica del MVP"
 ```
 
-### 16.5. Subir rama
+### 17.5. Subir rama
 
 ```bash
-git push origin feature/modelos
+git push origin feature/interfaz-grafica
 ```
 
-Luego se puede crear un Pull Request desde GitHub hacia la rama `develop`.
+Luego se puede crear un Pull Request desde GitHub hacia la rama definida por el equipo.
 
 ---
 
-## 17. Ejemplos de commits sugeridos
+## 18. Ejemplos de commits sugeridos
 
 ```text
 Agrega estructura base del proyecto Maven
 Agrega modelos del dominio
 Agrega repositorios con persistencia CSV
 Agrega servicios de negocio
-Agrega menú por consola
+Agrega interfaz grafica con Swing
 Agrega datos mínimos de prueba
 Actualiza README con instrucciones del proyecto
 ```
 
 ---
 
-## 18. Limitaciones del MVP
+## 19. Limitaciones del MVP
 
 Esta versión es un MVP, por lo tanto tiene algunas limitaciones:
 
 - No cuenta con autenticación real.
 - No usa base de datos relacional.
-- No maneja interfaz gráfica todavía.
 - No tiene control avanzado de multas o devoluciones.
 - No maneja concurrencia ni múltiples usuarios al mismo tiempo.
 - La persistencia en CSV es básica y no permite datos con comas en los campos.
+- La interfaz gráfica es sencilla y está enfocada únicamente en las funcionalidades solicitadas.
 
 Estas limitaciones son aceptables para esta primera versión, ya que el objetivo principal es demostrar la transacción de negocio, el CRUD y la trazabilidad desde el modelo hasta el código.
 
 ---
 
-## 19. Posibles mejoras futuras
+## 20. Posibles mejoras futuras
 
 Algunas mejoras que podrían implementarse después del MVP son:
 
-- Agregar interfaz gráfica con JavaFX o Swing.
 - Implementar autenticación de usuarios.
 - Agregar módulo de devolución de libros.
 - Agregar cálculo de multas.
@@ -559,27 +663,30 @@ Algunas mejoras que podrían implementarse después del MVP son:
 - Agregar búsqueda de libros por título, autor o categoría.
 - Generar reportes de préstamos activos.
 - Registrar historial completo de préstamos por usuario.
+- Mejorar la interfaz gráfica con más componentes visuales.
+- Agregar validaciones visuales más detalladas.
 
 ---
 
-## 20. Estado actual del proyecto
+## 21. Estado actual del proyecto
 
 El MVP cuenta con:
 
 - Proyecto Java creado con Maven.
-- Ejecución funcional desde consola.
+- Ejecución funcional mediante interfaz gráfica Swing.
 - Modelos del dominio implementados.
 - Repositorios con persistencia CSV.
 - Servicios con lógica de negocio.
 - Transacción de préstamo implementada.
-- CRUD de libros implementado.
+- CRUD de usuarios implementado en interfaz gráfica.
 - Datos mínimos de prueba.
 - README con instrucciones de ejecución.
-- Trazabilidad entre análisis, modelos y código.
+- Trazabilidad entre análisis, modelos, servicios, repositorios e interfaz.
+- Requisitos no funcionales mínimos documentados.
 
 ---
 
-## 21. Autores
+## 22. Autores
 
 Proyecto desarrollado por el equipo de trabajo para la asignatura correspondiente.
 
@@ -588,14 +695,14 @@ Integrantes:
 ```text
 Juan José Barrero Jaramillo
 Juan David Torres Arango
-Juan Diego Pérez Upegui 
+Juan Diego Pérez Upegui
 ```
 
 ---
 
-## 22. Conclusión
+## 23. Conclusión
 
 Este MVP permite representar de forma sencilla el proceso principal de préstamo de libros en una biblioteca.  
-Aunque la implementación es básica, cumple con los elementos solicitados: una transacción de negocio, un CRUD funcional, persistencia simple, datos de prueba, documentación de ejecución y trazabilidad desde los modelos hasta el código.
+Aunque la implementación es básica, cumple con los elementos solicitados: una transacción de negocio, un CRUD funcional, persistencia simple, datos de prueba, documentación de ejecución, interfaz gráfica y trazabilidad desde los modelos hasta el código.
 
-La solución sirve como primera versión funcional y puede ser ampliada posteriormente con interfaz gráfica, base de datos, autenticación y nuevos módulos relacionados con devoluciones, multas e historial de préstamos.
+La solución sirve como primera versión funcional y puede ser ampliada posteriormente con base de datos, autenticación y nuevos módulos relacionados con devoluciones, multas e historial de préstamos.
